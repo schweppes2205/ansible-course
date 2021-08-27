@@ -1,0 +1,35 @@
+#install httpd
+#start the service and check if the service indeed started
+#create /var/www/html/index.html with content: “Welcome to my web server”;
+#use firewalld to open required ports
+---
+- name: httpd maintenance
+  hosts: group02 
+  user: ansible
+  tasks:
+          - name: install {{ packageName }}
+            package: 
+                name: "{{ packageName }}"
+                state: present
+          - name: enable the {{ packageName }} service
+            service:
+                    name: "{{ packageName }}"
+                    enabled: yes
+                    state: started
+          - name: get all service facts
+            service_facts:
+          - name: get "{{ packageName }}" service facts
+            debug:
+                    var: ansible_facts.services["{{ packageName }}.service"].state
+          - name: copy index file
+            copy:
+                    src: ./copyContent/index.html
+                    dest: /var/www/html/index.html 
+                    owner: apache
+                    group: apache
+                    mode: '0644'
+          - name: open ports
+            firewalld:
+                    port: 80/tcp
+                    state: enabled
+...

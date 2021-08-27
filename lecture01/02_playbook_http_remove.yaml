@@ -1,0 +1,31 @@
+#remove httpd
+#remove /var/www/html/index.html
+#close ports
+---
+- name: httpd maintenance
+  hosts: all
+  user: ansible
+  tasks:
+          - name: remove index.html
+            file:
+                    path: /var/www/html/index.html
+                    state: absent
+          - name: close ports
+            firewalld:
+                    port: 80/tcp
+                    state: disabled
+          - name: disable {{ packageName }} service
+            service:
+                    name: "{{ packageName }}"
+                    enabled: no
+                    state: stopped
+          - name: get all service facts
+            service_facts:
+          - name: get {{ packageName }} service facts
+            debug:
+                    var: ansible_facts.services["{{ packageName }}.service"]
+          - name: remove {{ packageName }} service
+            package:
+                name: "{{ packageName }}"
+                state: absent
+...
