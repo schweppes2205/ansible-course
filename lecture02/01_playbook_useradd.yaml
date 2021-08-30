@@ -1,0 +1,24 @@
+#create 3 users. 
+#default params for homedir and shell. 
+#email is noted into comment section of passwd file.
+#user params are in group_vars/all file as dict
+#user pass is encrypted with openssl and ready to be placed into /etc/shadow file on target server
+#user pass is placed into passwd.yaml and encrypted with ansible-vault
+#vauld pass = password
+#users pass = password
+
+---
+- name: new user maintenance
+  hosts: all 
+  vars_files:
+          - passwd.yaml 
+  tasks:
+          - name: maintain a user
+            user:
+                    name: "{{ item.value.name }}"
+                    comment: "{{ item.value.email }}"
+                    password: "{{ passwd }}"
+                    create_home: yes
+            with_dict:
+                    - "{{ user }}"
+... 

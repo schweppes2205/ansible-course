@@ -1,0 +1,10 @@
+user:
+  alice:
+    name: Alice
+    email: Alice@mail.com
+  robert:
+    name: Bob
+    email: Bob@mail.com
+  carol:
+    name: Carol
+    email: Carol@mail.com

@@ -1,0 +1,6 @@
+group01:
+ hosts:
+  node1.example.com
+group02:
+ hosts:
+  node2.example.com
