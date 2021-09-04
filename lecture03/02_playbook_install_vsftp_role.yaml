@@ -1,0 +1,6 @@
+---
+- name: httpd maintenance
+  hosts: all
+  roles:
+          - role: vsftpd_install
+...

@@ -1,0 +1,31 @@
+---
+# tasks file for httpd_install
+- name: install {{ packageName }}
+  package:
+        name: "{{ packageName }}"
+        state: present
+- name: enable the {{ packageName }} service
+  service:
+        name: "{{ packageName }}"
+        enabled: yes
+        state: started
+- name: get all service facts
+  service_facts:
+- name: get "{{ packageName }}" service facts
+  debug:
+        var: ansible_facts.services["{{ packageName }}.service"].state
+- name: copy template to index file location
+  template:
+        src: index.j2
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
+- name: open ports
+  firewalld:
+        port: 80/tcp
+        state: enabled
+        permanent: yes
+  notify:
+          - reload_firewalld
+

@@ -1,0 +1,11 @@
+---
+# handlers file for httpd_install
+- name: restart_firewalld 
+  service:
+          name: firewalld
+          state: restarted 
+
+- name: restart_vsftpd
+  service:
+          name: vsftpd
+          state: restarted

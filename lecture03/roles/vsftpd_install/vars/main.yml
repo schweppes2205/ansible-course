@@ -1,0 +1,7 @@
+---
+# vars file for httpd_install
+packageName: vsftpd
+anonymous_enable: YES
+no_anon_password: YES
+anon_mkdir_write_enable: YES
+anon_upload_enable: YES

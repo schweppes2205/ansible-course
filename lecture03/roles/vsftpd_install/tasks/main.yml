@@ -1,0 +1,68 @@
+---
+# tasks file for vsftp_install
+- name: install {{ packageName }}
+  package:
+          name: "{{ packageName }}"
+          state: present
+
+- name: enable the {{ packageName }} service
+  service:
+          name: "{{ packageName }}"
+          enabled: yes
+          state: started
+
+- name: copy configuration file
+  template:
+          src: vsftpd.j2
+          dest: /etc/vsftpd/vsftpd.conf
+          owner: root
+          group: root
+          mode: '0600'
+          backup: yes
+  notify:
+          - restart_vsftpd
+
+- name: get all service facts
+  service_facts:
+
+- name: get "{{ packageName }}" service facts
+  debug:
+          var: ansible_facts.services["{{ packageName }}.service"].state
+
+- name: create file structure
+  file:
+          path: /var/ftp/pub/upload
+          state: directory
+          mode: '0755'
+          owner: ftp
+          group: ftp
+
+- name: open ports
+  firewalld:
+          port: '{{ item }}' 
+          state: enabled
+          permanent: yes
+  loop:
+          - 20/tcp
+          - 21/tcp
+          - 15000-15500/tcp
+  notify:
+          - restart_firewalld
+
+- name: configure SELinux booleans
+  seboolean:
+          name: '{{ item }}'
+          state: yes
+          persistent: yes
+  loop:
+          - allow_ftpd_anon_write
+          - allow_ftpd_anon_write
+
+- name: configure SELinux context
+  sefcontext:
+          target: '/var/ftp/pub/upload'
+          setype: public_content_rw_t
+          state: present
+
+- name: Apply new SELinux file context to filesystem
+  command: restorecon -R -v /var/ftp/pub/upload/

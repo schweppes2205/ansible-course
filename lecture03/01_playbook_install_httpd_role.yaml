@@ -1,0 +1,6 @@
+---
+- name: httpd maintenance
+  hosts: all
+  roles:
+          - role: httpd_install
+...

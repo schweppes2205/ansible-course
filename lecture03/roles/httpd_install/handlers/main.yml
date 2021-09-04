@@ -1,0 +1,6 @@
+---
+# handlers file for httpd_install
+- name: reload_firewalld 
+  service:
+        name: firewalld
+        state: restarted 
